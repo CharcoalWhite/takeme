@@ -1,0 +1,52 @@
+{
+	"schemaVersion": 1,
+	"id": "takeme",
+	"version": "${version}",
+	"name": "takeme",
+	"description": "Hold or carry players.",
+	"authors": [
+		{
+			"name": "CharcoalWhite",
+			"contact": {
+				"homepage": "https://github.com/CharcoalWhite"
+			}
+		}
+	],
+	"contact": {
+		"homepage": "https://modrinth.com/mod/takeme",
+		"sources": "https://github.com/CharcoalWhite/takeme"
+	},
+	"license": "GNU-GPL-3.0",
+	"icon": "assets/takeme/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"org.charcoalwhite.takeme.TakeMe"
+		],
+		"client": [
+			"org.charcoalwhite.takeme.TakemeClient"
+		]
+	},
+	"mixins": [
+		"takeme.mixins.json",
+		{
+			"config": "takeme.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.15.11",
+		"minecraft": "~1.20.4",
+		"java": ">=17",
+		"fabric-api": "*",
+		"charcoal-lib": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	},
+	"custom": {
+		"loom:injected_interfaces": {
+			"net/minecraft/entity/player/PlayerEntity": ["org/charcoalwhite/takeme/api/PlayerEntityApi"]
+		}
+	}
+}
