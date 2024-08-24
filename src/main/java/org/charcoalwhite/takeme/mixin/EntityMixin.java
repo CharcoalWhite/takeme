@@ -1,34 +1,27 @@
 package org.charcoalwhite.takeme.mixin;
 
-import org.charcoalwhite.takeme.TakeMe;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.Entity.PositionUpdater;
+import net.minecraft.util.math.Vec3d;
+import org.charcoalwhite.takeme.TakeMe;
+import org.charcoalwhite.takeme.api.EntityApi;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(Entity.class)
-public abstract class EntityMixin{
-	@Inject(
-		method = "removePassenger(Lnet/minecraft/entity/Entity;)V",
-		at = @At("TAIL")
-	)
-	private void removeTakeMeCommandTags(Entity passenger, CallbackInfo ci) {
-		if (((Entity) (Object) this).isPlayer()) {
-			if (((Entity) (Object) this).hasCommandTag(TakeMe.THE_CARRIER)) {
-				((Entity) (Object) this).removeCommandTag(TakeMe.THE_CARRIER);
-			}
-			if (((Entity) (Object) this).hasCommandTag(TakeMe.THE_HOLDER)) {
-				((Entity) (Object) this).removeCommandTag(TakeMe.THE_HOLDER);
-			}
-			if (passenger.isPlayer()) {
-				if (passenger.hasCommandTag(TakeMe.THE_CARRIED)) {
-					passenger.removeCommandTag(TakeMe.THE_CARRIED);
-				}
-				if (passenger.hasCommandTag(TakeMe.THE_HELD)) {
-					passenger.removeCommandTag(TakeMe.THE_HELD);
-				}
-			}
-		}
-	}
+public abstract class EntityMixin implements EntityApi{
+	@Overwrite
+    public void updatePassengerPosition(Entity passenger, PositionUpdater positionUpdater) {
+        Vec3d vec3d = ((Entity)(Object)this).getPassengerRidingPos(passenger);
+        Vec3d vec3d2 = passenger.getVehicleAttachmentPos((Entity)(Object)this);
+		Vec3d vec3d3 = ((Entity)(Object)this).hasCommandTag(TakeMe.HOLDING) ? passenger.getVehicleHoldingOffset((Entity)(Object)this) : Vec3d.ZERO;
+        positionUpdater.accept(passenger, vec3d.x - vec3d2.x + vec3d3.x, vec3d.y - vec3d2.y + vec3d3.y, vec3d.z - vec3d2.z + vec3d3.z);
+    }
+
+    @Shadow
+    public abstract Vec3d getVehicleAttachmentPos(Entity vehicle);
+
+    @Shadow
+    public abstract Vec3d getPassengerRidingPos(Entity passenger);
 }

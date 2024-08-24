@@ -4,6 +4,8 @@ import org.charcoalwhite.takeme.TakeMe;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -23,11 +25,11 @@ public abstract class BipedEntityModelMixin {
             cancellable = true
     )
     private void playerPickedUp(LivingEntity entity, CallbackInfo ci) {
-        if(entity.hasCommandTag(TakeMe.THE_HELD)) {
-            this.rightArm.pitch = 0.005f;
-            this.rightArm.yaw = (float) (-Math.PI / 8);
-            this.leftArm.pitch = 0.005f;
-            this.leftArm.yaw = (float) (Math.PI / 8);
+        if(((PlayerEntity)(Object)this).hasCommandTag(TakeMe.HOLDING)) {
+            ((BipedEntityModel<PlayerEntity>)(Object)this).rightArm.pitch = 0.005f;
+            ((BipedEntityModel<PlayerEntity>)(Object)this).rightArm.yaw = (float) (-Math.PI / 8);
+            ((BipedEntityModel<PlayerEntity>)(Object)this).leftArm.pitch = 0.005f;
+            ((BipedEntityModel<PlayerEntity>)(Object)this).leftArm.yaw = (float) (Math.PI / 8);
             ci.cancel();
         }
     }

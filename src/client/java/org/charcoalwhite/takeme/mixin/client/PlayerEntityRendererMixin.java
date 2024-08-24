@@ -18,7 +18,7 @@ public abstract class PlayerEntityRendererMixin {
             cancellable = true
     )
     private static void playerPickedUp(AbstractClientPlayerEntity player, Hand hand, CallbackInfoReturnable<BipedEntityModel.ArmPose> ci) {
-        if(player.hasCommandTag(TakeMe.THE_HELD)) {
+        if(player.hasCommandTag(TakeMe.HOLDING)) {
             ci.setReturnValue(BipedEntityModel.ArmPose.CROSSBOW_HOLD);
         }
     }

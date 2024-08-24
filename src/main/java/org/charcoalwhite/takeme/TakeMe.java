@@ -11,10 +11,7 @@ public class TakeMe implements ModInitializer {
 	// This logger is used to write text to the console and the log file.
 	// It is considered best practice to use your mod id as the logger's name.
 	// That way, it's clear which mod wrote info, warnings, and errors.
-	public static final String THE_CARRIED = "the_carried";
-	public static final String THE_CARRIER = "the_carrier";
-	public static final String THE_HELD = "the_held";
-	public static final String THE_HOLDER = "the_holder";
+	public static final String HOLDING = "holding";
     public static final Logger LOGGER = LoggerFactory.getLogger("takeme");
 
 	@Override
@@ -33,34 +30,30 @@ public class TakeMe implements ModInitializer {
 						if (player.hasPassenger(player2)) {
 							if (player.isSneaking() && player.getPitch() < 0) {
 								player2.stopRiding();
+								player.removeCommandTag(HOLDING);
 							}
 						} else {
 							PlayerEntity player3 = (PlayerEntity) player.getFirstPassenger();
 							if (player3.squaredDistanceTo(player2) < 1) {
 								player3.startRiding(player2, true);
-								player3.addCommandTag(THE_HELD);
-								player2.addCommandTag(THE_HOLDER);
+								player2.addCommandTag(HOLDING);
 							} else if (player3.squaredDistanceTo(player2.getEyePos()) < 1) {
 								player3.startRiding(player2, true);
-								player3.addCommandTag(THE_CARRIED);
-								player2.addCommandTag(THE_CARRIER);
+								player2.removeCommandTag(HOLDING);
 							}
 						}
 					} else {
 						if (player.squaredDistanceTo(player2) < 1) {
 							if (player.isSneaking()) {
 								player2.startRiding(player, true);
-								player2.addCommandTag(THE_CARRIED);
-								player.addCommandTag(THE_CARRIER);
+								player.removeCommandTag(HOLDING);
 							} else {
 								player2.startRiding(player, true);
-								player2.addCommandTag(THE_HELD);
-								player.addCommandTag(THE_HOLDER);
+								player.addCommandTag(HOLDING);
 							}
 						} else if (player.squaredDistanceTo(player2.getEyePos()) < 1) {
 							player.startRiding(player2, true);
-							player.addCommandTag(THE_CARRIED);
-							player2.addCommandTag(THE_CARRIER);
+							player2.removeCommandTag(HOLDING);
 						}
 					}
 				}
