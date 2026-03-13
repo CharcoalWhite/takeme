@@ -40,6 +40,15 @@ repositories {
 }
 
 loom {
+    splitEnvironmentSourceSets()
+
+    mods {
+        "take-me" {
+            sourceSet sourceSets.main
+            sourceSet sourceSets.client
+        }
+    }
+
     accessWidenerPath = file("src/main/resources/take-me.classtweaker")
 }
 

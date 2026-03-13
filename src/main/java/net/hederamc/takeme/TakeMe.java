@@ -2,6 +2,9 @@ package net.hederamc.takeme;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.hederamc.takeme.network.protocol.common.TakeMeConnectionInitializerC2SPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -23,8 +26,17 @@ public class TakeMe implements ModInitializer {
         // However, some things (like resources) may still be uninitialized.
         // Proceed with mild caution.
 
-        LOGGER.info("[Take-Me] *HeavyHeavyHeavy-*");
+        LOGGER.info("Take Me: *HeavyHeavyHeavy-*");
 
+        PayloadTypeRegistry.serverboundPlay().register(TakeMeConnectionInitializerC2SPayload.ID, TakeMeConnectionInitializerC2SPayload.CODEC);
+        ServerPlayNetworking.registerGlobalReceiver(TakeMeConnectionInitializerC2SPayload.ID, (payload, context) -> {
+            ServerPlayer player = context.player();
+            if (player == null) {
+                return;
+            }
+
+            player.connection.setCanConnectTakeMe(true);
+        });
         UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
             if (!(entity instanceof ServerPlayer)) {
                 return InteractionResult.PASS;
@@ -38,7 +50,7 @@ public class TakeMe implements ModInitializer {
                 return InteractionResult.PASS;
             }
 
-            ServerPlayer usedPlayer = (ServerPlayer)entity;
+            ServerPlayer usedPlayer = (ServerPlayer) entity;
             if (!player.isCrouching()) {
                 if (usedPlayer.getPassengers().isEmpty()) {
                     player.startRiding(usedPlayer, true, true);
@@ -64,7 +76,7 @@ public class TakeMe implements ModInitializer {
                 return InteractionResult.PASS;
             }
 
-            ServerPlayer passengerPlayer = (ServerPlayer)passenger;
+            ServerPlayer passengerPlayer = (ServerPlayer) passenger;
             if (usedPlayer.getPassengers().isEmpty()) {
                 passengerPlayer.startRiding(usedPlayer, true, true);
             }
@@ -74,7 +86,7 @@ public class TakeMe implements ModInitializer {
                 return InteractionResult.PASS;
             }
 
-            ServerPlayer usedPlayerPassengerPlayer = (ServerPlayer)usedPlayerPassenger;
+            ServerPlayer usedPlayerPassengerPlayer = (ServerPlayer) usedPlayerPassenger;
             usedPlayerPassengerPlayer.stopRiding();
             passengerPlayer.startRiding(usedPlayer, true, true);
             usedPlayerPassengerPlayer.startRiding(player, true, true);

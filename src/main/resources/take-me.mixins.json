@@ -3,7 +3,8 @@
     "package": "net.hederamc.takeme.mixin",
     "compatibilityLevel": "JAVA_25",
     "mixins": [
-        "PlayerMixin"
+        "PlayerMixin",
+        "ServerGamePacketListenerImplMixin"
     ],
     "injectors": {
         "defaultRequire": 1

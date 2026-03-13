@@ -23,10 +23,17 @@
     "entrypoints": {
         "main": [
             "net.hederamc.takeme.TakeMe"
+        ],
+        "client": [
+            "net.hederamc.takeme.TakeMeClient"
         ]
     },
     "mixins": [
-        "take-me.mixins.json"
+        "take-me.mixins.json",
+        {
+            "config": "take-me.client.mixins.json",
+            "environment": "client"
+        }
     ],
     "depends": {
         "fabricloader": ">=0.18.4",
